@@ -51,7 +51,7 @@ async function run(): Promise<void> {
       repo,
       base,
       head,
-      status: 'closed'
+      state: 'closed'
     })
 
     const latestPullRequestMergedAt = latestPullRequest?.mergedAt
@@ -72,7 +72,7 @@ async function run(): Promise<void> {
       repo,
       base,
       head,
-      status: 'open'
+      state: 'open'
     })
 
     setOutputs({...getRelatedPrsResult, ...openedPull})

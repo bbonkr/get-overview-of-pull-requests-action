@@ -12,7 +12,7 @@ test('Should get latest pull', async () => {
     repo,
     token,
     base: 'main',
-    status: 'closed'
+    state: 'closed'
   })
   // Assert
   expect(result?.number).toBeGreaterThan(0)

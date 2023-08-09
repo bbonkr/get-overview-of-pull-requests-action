@@ -47,32 +47,45 @@ exports.GetLatestPrOutputs = {
     number: 'latest_pr_number',
     mergedAt: 'latest_pr_merged_at'
 };
-const getLatestPull = (getLatesPrsOptions) => __awaiter(void 0, void 0, void 0, function* () {
-    const { token, owner, repo, base, head, status } = getLatesPrsOptions;
+const getLatestPull = (options) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token, owner, repo, base, head, state } = options;
     try {
         const octokit = github.getOctokit(token);
-        const { data } = yield octokit.rest.pulls.list({
-            owner,
-            repo,
-            base,
-            head,
-            state: status,
+        const stateQuery = state ? `is:${state}` : '';
+        const baseQuery = base ? `base:${base}` : '';
+        const headQuery = head ? `head:${head}` : '';
+        const query = [
+            stateQuery,
+            baseQuery,
+            headQuery,
+            'is:pr',
+            `repo:${owner}/${repo}`
+        ]
+            .filter(Boolean)
+            .join(' ');
+        const { data: pulls } = yield octokit.rest.search.issuesAndPullRequests({
             sort: 'created',
-            direction: 'desc',
+            order: 'desc',
+            page: 1,
             per_page: 1,
-            page: 1
+            q: query
         });
-        const firstItem = data === null || data === void 0 ? void 0 : data.find((_, index) => index === 0);
+        const firstItem = pulls === null || pulls === void 0 ? void 0 : pulls.items.find((_, index) => index === 0);
         if (firstItem) {
-            return {
-                number: firstItem.number,
-                mergedAt: firstItem.merged_at
-            };
+            const { data } = yield octokit.rest.pulls.get({
+                owner,
+                repo,
+                pull_number: firstItem.number
+            });
+            if (data) {
+                return {
+                    number: data.number,
+                    mergedAt: data.merged_at
+                };
+            }
         }
-        else {
-            core.warning(`Lasted Pr (base=${base}, head=${head}) not found`);
-            return null;
-        }
+        core.warning(`Lasted Pr (base=${base}, head=${head}) not found`);
+        return null;
     }
     catch (err) {
         (0, handle_error_1.handleError)(err);
@@ -136,7 +149,7 @@ exports.GetRelatedPrsOutput = {
     reviewers: 'pr_reviewers'
 };
 const getRelatedPulls = (options) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a, _b, _c;
     const { token, owner, repo, base, mergedAfter, limit, message, hideNotificationMessage } = options;
     const merged = mergedAfter !== null && mergedAfter !== void 0 ? mergedAfter : new Date('1990-01-01T00:00:00Z');
     const targetPrsLimit = limit !== null && limit !== void 0 ? limit : -1;
@@ -145,29 +158,31 @@ const getRelatedPulls = (options) => __awaiter(void 0, void 0, void 0, function*
         let prs = [];
         let resultCount = 0;
         let page = 1;
-        const targetState = 'closed';
         const octokit = github.getOctokit(token);
         do {
             try {
                 core.debug(`Try to get list of pulls. repo=${repo}`);
-                const { data } = yield octokit.rest.pulls.list({
-                    owner,
-                    repo,
-                    base,
+                const baseQuery = base ? `base:${base}` : '';
+                const query = [
+                    `repo:${owner}/${repo}`,
+                    'is:pr',
+                    'is:closed',
+                    'is:merged',
+                    baseQuery,
+                    `merged:>${merged.toISOString()}`
+                ]
+                    .filter(Boolean)
+                    .join(' ');
+                const { data } = yield octokit.rest.search.issuesAndPullRequests({
+                    q: query,
                     sort: 'created',
-                    direction: 'desc',
-                    state: 'closed',
+                    order: 'desc',
                     page,
                     per_page: 100
                 });
-                resultCount = (_a = data === null || data === void 0 ? void 0 : data.length) !== null && _a !== void 0 ? _a : 0;
+                resultCount = (_b = (_a = data.items) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0;
                 core.debug(`Found ${resultCount} pulls.`);
-                const upToPRs = data
-                    .slice()
-                    .filter(x => x.state === targetState &&
-                    x.merged_at &&
-                    new Date(x.merged_at) > merged)
-                    .map(x => {
+                const upToPRs = data.items.slice().map(x => {
                     var _a, _b, _c, _d;
                     const pull = {
                         number: x.number,
@@ -232,7 +247,7 @@ ${hideNotificationMessage
             title,
             body,
             labels: (labels !== null && labels !== void 0 ? labels : []).join(','),
-            milestone: `${(_b = milestone === null || milestone === void 0 ? void 0 : milestone.number) !== null && _b !== void 0 ? _b : ''}`,
+            milestone: `${(_c = milestone === null || milestone === void 0 ? void 0 : milestone.number) !== null && _c !== void 0 ? _c : ''}`,
             assignees: (assignees !== null && assignees !== void 0 ? assignees : []).join(','),
             reviewers: (assignees !== null && assignees !== void 0 ? assignees : []).join(',')
         };
@@ -458,7 +473,7 @@ function run() {
                 repo,
                 base,
                 head,
-                status: 'closed'
+                state: 'closed'
             });
             const latestPullRequestMergedAt = (latestPullRequest === null || latestPullRequest === void 0 ? void 0 : latestPullRequest.mergedAt)
                 ? new Date(latestPullRequest.mergedAt)
@@ -476,7 +491,7 @@ function run() {
                 repo,
                 base,
                 head,
-                status: 'open'
+                state: 'open'
             });
             (0, set_outputs_1.setOutputs)(Object.assign(Object.assign({}, getRelatedPrsResult), openedPull));
         }
