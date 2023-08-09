@@ -45,11 +45,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: 'Gh signin'
-        run: |
-          gh auth login
-        env:
-          GH_TOKEN: ${{ github.token }}
+      #   - name: 'Gh signin'
+      #     run: |
+      #       gh auth login
+      #     env:
+      #       GITHUB_TOKEN: ${{ github.token }}
 
       - name: Set Node.js 18.x
         uses: actions/setup-node@v3
@@ -120,6 +120,8 @@ jobs:
             --assignee ${{ steps.get_overview.outputs.assignees }} \
             --body '${{ steps.get_overview.outputs.body }}' \
             --title '${{ env.MAIN_BRANCH_NAME }}'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Update pull
         if: ${{ steps.get_overview.outputs.pull_number != '' }}
@@ -128,3 +130,5 @@ jobs:
             --body '${{ steps.get_overview.outputs.body }}' \
             --title '${{ env.MAIN_BRANCH_NAME }}' \
             --add-label '${{ steps.get_overview.outputs.labels }}'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
