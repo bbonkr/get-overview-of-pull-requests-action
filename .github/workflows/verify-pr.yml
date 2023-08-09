@@ -25,6 +25,11 @@ jobs:
       - name: Run all npm script
         run: |
           npm run all
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          OWNER: ${{ secrets.OWNER }}
+          REPO: ${{ secrets.REPO }}
+          NODE_ENV: production
 
       - uses: ./
         id: get_overview

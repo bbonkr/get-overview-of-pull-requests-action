@@ -40,8 +40,11 @@ jobs:
         run: |
           npm run build
           npm run package
-        # env:
-        #   NODE_ENV: production
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          OWNER: ${{ secrets.OWNER }}
+          REPO: ${{ secrets.REPO }}
+          NODE_ENV: production
 
       - name: Compare the expected and actual dist/ directories
         run: |
