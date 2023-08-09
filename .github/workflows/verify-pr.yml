@@ -1,0 +1,56 @@
+name: 'Verify PR'
+
+on: # rebuild any PRs and main branch changes
+  pull_request:
+#   push:
+#     branches:
+#       - main
+
+jobs:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Run all npm script
+        run: |
+          npm run all
+
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - uses: ./
+        id: get_overview
+        with:
+          github_token: ${{ github.token }}
+          base: ${{ github.event.pull_request.base.ref }}
+          head: ${{ github.event.pull_request.head.ref }}
+          default_branch: main
+
+      - name: logging
+        run: |
+          echo "title:       ${{ steps.get_overview.outputs.title }}"
+          echo "body:        ${{ steps.get_overview.outputs.body }}"
+          echo "labels:      ${{ steps.get_overview.outputs.labels }}"
+          echo "milestone:   ${{ steps.get_overview.outputs.milestone }}"
+          echo "assignees:   ${{ steps.get_overview.outputs.assignees }}"
+          echo "reviewers:   ${{ steps.get_overview.outputs.reviewers }}"
+          echo "pull_number: ${{ steps.get_overview.outputs.pull_number }}"
