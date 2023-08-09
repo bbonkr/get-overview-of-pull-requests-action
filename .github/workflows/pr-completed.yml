@@ -29,13 +29,19 @@ jobs:
         run: |
           npm install
 
+      - name: Run test
+        run: |
+          npm run test --if-present
+        env:
+          NODE_ENV: test
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          OWNER: ${{ secrets.OWNER }}
+          REPO: ${{ secrets.REPO }}
+
       - name: Run all npm script
         run: |
           npm run all
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          OWNER: ${{ secrets.OWNER }}
-          REPO: ${{ secrets.REPO }}
           NODE_ENV: production
 
   create-tag:
@@ -60,13 +66,19 @@ jobs:
         run: |
           npm install
 
+      - name: Run test
+        run: |
+          npm run test --if-present
+        env:
+          NODE_ENV: test
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          OWNER: ${{ secrets.OWNER }}
+          REPO: ${{ secrets.REPO }}
+
       - name: Run all npm script
         run: |
           npm run all
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          OWNER: ${{ secrets.OWNER }}
-          REPO: ${{ secrets.REPO }}
           NODE_ENV: production
 
       - name: 'get next version name'
@@ -113,6 +125,16 @@ jobs:
           base: main
           head: ${{ github.event.pull_request.base.ref }}
           default_branch: dev
+
+      - name: logging
+        run: |
+          echo "title:       ${{ steps.get_overview.outputs.title }}"
+          echo "body:        ${{ steps.get_overview.outputs.body }}"
+          echo "labels:      ${{ steps.get_overview.outputs.labels }}"
+          echo "milestone:   ${{ steps.get_overview.outputs.milestone }}"
+          echo "assignees:   ${{ steps.get_overview.outputs.assignees }}"
+          echo "reviewers:   ${{ steps.get_overview.outputs.reviewers }}"
+          echo "pull_number: ${{ steps.get_overview.outputs.pull_number }}"
 
       - name: Create pull
         if: ${{ steps.get_overview.outputs.pull_number == '' }}

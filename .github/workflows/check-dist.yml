@@ -36,14 +36,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Run test
+        run: |
+          npm run test --if-present
+        env:
+          NODE_ENV: test
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          OWNER: ${{ secrets.OWNER }}
+          REPO: ${{ secrets.REPO }}
+
       - name: Rebuild the dist/ directory
         run: |
           npm run build
           npm run package
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          OWNER: ${{ secrets.OWNER }}
-          REPO: ${{ secrets.REPO }}
           NODE_ENV: production
 
       - name: Compare the expected and actual dist/ directories

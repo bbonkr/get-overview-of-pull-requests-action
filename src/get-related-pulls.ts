@@ -87,7 +87,7 @@ export const getRelatedPulls = async (
 
     do {
       try {
-        core.debug('Try to get list of pulls')
+        core.debug(`Try to get list of pulls. repo=${repo}`)
         const {data} = await octokit.rest.pulls.list({
           owner,
           repo,
