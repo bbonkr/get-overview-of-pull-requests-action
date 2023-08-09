@@ -2,9 +2,6 @@ name: 'Verify PR'
 
 on: # rebuild any PRs and main branch changes
   pull_request:
-#   push:
-#     branches:
-#       - main
 
 jobs:
   build: # make sure build/ci work properly
@@ -22,14 +19,20 @@ jobs:
         run: |
           npm install
 
-      - name: Run all npm script
+      - name: Run test
         run: |
-          npm run all
+          npm run test --if-present
         env:
+          NODE_ENV: test
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           OWNER: ${{ secrets.OWNER }}
           REPO: ${{ secrets.REPO }}
-          NODE_ENV: production
+
+      - name: Run all npm script
+        run: |
+          npm run all
+        # env:
+        #   NODE_ENV: production
 
       - uses: ./
         id: get_overview

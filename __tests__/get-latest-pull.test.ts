@@ -3,6 +3,7 @@ import {getLatestPull} from '../src/get-latest-pull'
 
 test('Should get latest pull', async () => {
   // Arrange
+
   const owner = process.env.OWNER ?? ''
   const repo = process.env.REPO ?? ''
   const token = process.env.GH_TOKEN ?? ''
@@ -12,7 +13,7 @@ test('Should get latest pull', async () => {
     repo,
     token,
     base: 'main',
-    status: 'closed'
+    state: 'closed'
   })
   // Assert
   expect(result?.number).toBeGreaterThan(0)

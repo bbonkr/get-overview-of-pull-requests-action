@@ -19,40 +19,58 @@ type GetLatestPrsOptions = {
   repo: string
   base?: string
   head?: string
-  status?: PrStatus
+  state?: PrStatus
 }
 
 export const getLatestPull = async (
-  getLatesPrsOptions: GetLatestPrsOptions
+  options: GetLatestPrsOptions
 ): Promise<GetLatestPrsResult | null> => {
-  const {token, owner, repo, base, head, status} = getLatesPrsOptions
+  const {token, owner, repo, base, head, state} = options
 
   try {
     const octokit = github.getOctokit(token)
 
-    const {data} = await octokit.rest.pulls.list({
-      owner,
-      repo,
-      base,
-      head,
-      state: status,
+    const stateQuery = state ? `is:${state}` : ''
+    const baseQuery = base ? `base:${base}` : ''
+    const headQuery = head ? `head:${head}` : ''
+
+    const query = [
+      stateQuery,
+      baseQuery,
+      headQuery,
+      'is:pr',
+      `repo:${owner}/${repo}`
+    ]
+      .filter(Boolean)
+      .join(' ')
+
+    const {data: pulls} = await octokit.rest.search.issuesAndPullRequests({
       sort: 'created',
-      direction: 'desc',
+      order: 'desc',
+      page: 1,
       per_page: 1,
-      page: 1
+      q: query
     })
 
-    const firstItem = data?.find((_, index) => index === 0)
+    const firstItem = pulls?.items.find((_, index) => index === 0)
     if (firstItem) {
-      return {
-        number: firstItem.number,
-        mergedAt: firstItem.merged_at
-      }
-    } else {
-      core.warning(`Lasted Pr (base=${base}, head=${head}) not found`)
+      const {data} = await octokit.rest.pulls.get({
+        owner,
+        repo,
+        pull_number: firstItem.number
+      })
 
-      return null
+      if (data) {
+        return {
+          number: data.number,
+          mergedAt: data.merged_at
+        }
+      }
     }
+
+    core.warning(`Lasted Pr (base=${base}, head=${head}) not found`)
+
+    return null
   } catch (err: unknown) {
     handleError(err)
   }
