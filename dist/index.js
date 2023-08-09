@@ -149,7 +149,7 @@ const getRelatedPulls = (options) => __awaiter(void 0, void 0, void 0, function*
         const octokit = github.getOctokit(token);
         do {
             try {
-                core.debug('Try to get list of pulls');
+                core.debug(`Try to get list of pulls. repo=${repo}`);
                 const { data } = yield octokit.rest.pulls.list({
                     owner,
                     repo,
@@ -457,6 +457,7 @@ function run() {
                 owner,
                 repo,
                 base,
+                head,
                 status: 'closed'
             });
             const latestPullRequestMergedAt = (latestPullRequest === null || latestPullRequest === void 0 ? void 0 : latestPullRequest.mergedAt)
@@ -474,6 +475,7 @@ function run() {
                 owner,
                 repo,
                 base,
+                head,
                 status: 'open'
             });
             (0, set_outputs_1.setOutputs)(Object.assign(Object.assign({}, getRelatedPrsResult), openedPull));
@@ -547,14 +549,16 @@ exports.setOutputs = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const outputs_1 = __nccwpck_require__(5314);
 const setOutputs = (model) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
-    core.setOutput(outputs_1.outputs.title, (_a = model === null || model === void 0 ? void 0 : model.title) !== null && _a !== void 0 ? _a : '');
-    core.setOutput(outputs_1.outputs.body, (_b = model === null || model === void 0 ? void 0 : model.body) !== null && _b !== void 0 ? _b : '');
-    core.setOutput(outputs_1.outputs.labels, (_c = model === null || model === void 0 ? void 0 : model.labels) !== null && _c !== void 0 ? _c : '');
-    core.setOutput(outputs_1.outputs.assignees, (_d = model === null || model === void 0 ? void 0 : model.assignees) !== null && _d !== void 0 ? _d : '');
-    core.setOutput(outputs_1.outputs.reviewers, (_e = model === null || model === void 0 ? void 0 : model.reviewers) !== null && _e !== void 0 ? _e : '');
-    core.setOutput(outputs_1.outputs.milestone, (_f = model === null || model === void 0 ? void 0 : model.milestone) !== null && _f !== void 0 ? _f : '');
-    core.setOutput(outputs_1.outputs.pullNumber, `${(_h = (_g = model === null || model === void 0 ? void 0 : model.number) === null || _g === void 0 ? void 0 : _g.toString()) !== null && _h !== void 0 ? _h : ''}`);
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    core.notice(`title: ${(_a = model === null || model === void 0 ? void 0 : model.title) !== null && _a !== void 0 ? _a : ''}`);
+    core.notice(`pull_number: ${(_c = (_b = model === null || model === void 0 ? void 0 : model.number) === null || _b === void 0 ? void 0 : _b.toString()) !== null && _c !== void 0 ? _c : ''}`);
+    core.setOutput(outputs_1.outputs.title, (_d = model === null || model === void 0 ? void 0 : model.title) !== null && _d !== void 0 ? _d : '');
+    core.setOutput(outputs_1.outputs.body, (_e = model === null || model === void 0 ? void 0 : model.body) !== null && _e !== void 0 ? _e : '');
+    core.setOutput(outputs_1.outputs.labels, (_f = model === null || model === void 0 ? void 0 : model.labels) !== null && _f !== void 0 ? _f : '');
+    core.setOutput(outputs_1.outputs.assignees, (_g = model === null || model === void 0 ? void 0 : model.assignees) !== null && _g !== void 0 ? _g : '');
+    core.setOutput(outputs_1.outputs.reviewers, (_h = model === null || model === void 0 ? void 0 : model.reviewers) !== null && _h !== void 0 ? _h : '');
+    core.setOutput(outputs_1.outputs.milestone, (_j = model === null || model === void 0 ? void 0 : model.milestone) !== null && _j !== void 0 ? _j : '');
+    core.setOutput(outputs_1.outputs.pullNumber, (_l = (_k = model === null || model === void 0 ? void 0 : model.number) === null || _k === void 0 ? void 0 : _k.toString()) !== null && _l !== void 0 ? _l : '');
 };
 exports.setOutputs = setOutputs;
 
