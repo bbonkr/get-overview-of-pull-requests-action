@@ -41,8 +41,8 @@ jobs:
       - name: Run all npm script
         run: |
           npm run all
-        env:
-          NODE_ENV: production
+        # env:
+        #   NODE_ENV: production
 
   create-tag:
     needs: [build]
@@ -78,8 +78,8 @@ jobs:
       - name: Run all npm script
         run: |
           npm run all
-        env:
-          NODE_ENV: production
+        # env:
+        #   NODE_ENV: production
 
       - name: 'get next version name'
         uses: bbonkr/next-version-proposal-action@v1
