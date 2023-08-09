@@ -15,8 +15,6 @@ test('Should get related pulls', async () => {
     limit: 10
   })
 
-  console.debug('result: ', result)
-
   // Assert
   expect(result?.title).not.toBe('')
 })
