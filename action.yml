@@ -1,0 +1,46 @@
+name: 'get-overview-of-pull-request'
+description: 'GitHub action: Getting Overview of pull requests'
+author: 'bbonkr'
+branding:
+  color: purple 
+  icon: check
+inputs:
+  github_token:
+    required: true
+    description: 'GitHub Personal Access Token. It requires REPO scope.'
+  base:
+    required: true
+    description: 'Base branch name of pull request'
+  head:
+    required: true
+    description: 'Head branch name of pull request'
+  default_branch:
+    required: false
+    description: 'Branch name which collects informations; default: default branch of repository'    
+  owner:
+    required: false
+    description: 'Name of repository owner, For test. You does not need this input.'
+    default: ''
+  repo:
+    required: false
+    description: 'Repository name; For test. You does not need this input.'
+    default: ''
+
+outputs:
+  title:
+    description: 'Title of pull request'
+  body:
+    description: 'Body of pull request'
+  labels:
+    description: 'A comma-separated list of label names'
+  milestone:
+    description: 'Milestone'
+  assignees:
+    description: 'A comma-separated list of assignee logins'
+  reviewers:
+    description: 'A comma-separated list of reviewer logins'
+  pull_number:
+    description: 'Pull request number of base branch if it exists'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

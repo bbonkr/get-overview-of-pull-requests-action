@@ -6,8 +6,12 @@ GitHub action which is getting overview of pull requests.
 
 ### Inputs
 
+- github_token
+- owner
+- repo
 - base
 - head
+- default
 
 ### outputs
 
