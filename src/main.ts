@@ -50,6 +50,7 @@ async function run(): Promise<void> {
       owner,
       repo,
       base,
+      head,
       status: 'closed'
     })
 
@@ -70,6 +71,7 @@ async function run(): Promise<void> {
       owner,
       repo,
       base,
+      head,
       status: 'open'
     })
 
