@@ -1,14 +1,13 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {handleError} from './handle-error'
-import {PrStatus} from './pr-status'
 
 type Pull = {
   number: number
   labels: {
-    name: string
+    name?: string
   }[]
-  assignee: {
+  assignee?: {
     login?: string
   }
   assignees?: {
@@ -81,46 +80,48 @@ export const getRelatedPulls = async (
     let prs: Pulls = []
     let resultCount = 0
     let page = 1
-    const targetState: PrStatus = 'closed'
 
     const octokit = github.getOctokit(token)
 
     do {
       try {
         core.debug(`Try to get list of pulls. repo=${repo}`)
-        const {data} = await octokit.rest.pulls.list({
-          owner,
-          repo,
-          base,
+
+        const baseQuery = base ? `base:${base}` : ''
+
+        const query = [
+          `repo:${owner}/${repo}`,
+          'is:pr',
+          'is:closed',
+          'is:merged',
+          baseQuery,
+          `merged:>${merged.toISOString()}`
+        ]
+          .filter(Boolean)
+          .join(' ')
+
+        const {data} = await octokit.rest.search.issuesAndPullRequests({
+          q: query,
           sort: 'created',
-          direction: 'desc',
-          state: 'closed',
+          order: 'desc',
           page,
           per_page: 100
         })
 
-        resultCount = data?.length ?? 0
+        resultCount = data.items?.length ?? 0
 
         core.debug(`Found ${resultCount} pulls.`)
 
-        const upToPRs = data
-          .slice()
-          .filter(
-            x =>
-              x.state === targetState &&
-              x.merged_at &&
-              new Date(x.merged_at) > merged
-          )
-          .map(x => {
-            const pull: Pull = {
-              number: x.number,
-              labels: x.labels?.map(label => ({name: label.name})),
-              assignee: {login: x.assignee?.login},
-              assignees: x.assignees?.map(a => ({login: a.login})),
-              milestone: {number: x.milestone?.number}
-            }
-            return pull
-          })
+        const upToPRs = data.items.slice().map(x => {
+          const pull: Pull = {
+            number: x.number,
+            labels: x.labels?.map(label => ({name: label.name})),
+            assignee: {login: x.assignee?.login},
+            assignees: x.assignees?.map(a => ({login: a.login})),
+            milestone: {number: x.milestone?.number}
+          }
+          return pull
+        })
 
         core.debug(`Count of filtered pulls is ${upToPRs.length}`)
 
