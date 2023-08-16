@@ -48,6 +48,11 @@ jobs:
           echo "version=${{ steps.git_tag_check.outputs.minor }}"
           echo "version=${{ steps.git_tag_check.outputs.patch }}"
 
+      - name: Git tag not found
+        run: |
+          echo "There is no '${{ github.ref_name }}' git tag"
+          exit 1
+
       - name: Create or update tag major
         uses: rickstaa/action-create-tag@v1
         if: ${{ (steps.git_tag_check.outputs.version != '') && (steps.git_tag_check.outputs.major != '') }}
