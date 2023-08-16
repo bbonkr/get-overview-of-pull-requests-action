@@ -144,3 +144,7 @@ jobs:
 | assignees   | A comma-separated list of assignee logins       |
 | reviewers   | A comma-separated list of reviewer logins       |
 | pull_number | Pull request number of base branch if it exists |
+
+### Limitations
+
+We cannot add project which defined on ORG (or profile) level when create pull or update pull.
