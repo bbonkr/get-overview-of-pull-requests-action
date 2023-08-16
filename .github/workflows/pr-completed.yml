@@ -11,7 +11,7 @@ permissions:
 
 env:
   MAIN_BRANCH_NAME: main
-  PROJECT_NAME: 'GitHub Actions'
+  PROJECT_NAME: '' # Repository project only; ORG project not supported
 
 jobs:
   build: # make sure build/ci work properly
