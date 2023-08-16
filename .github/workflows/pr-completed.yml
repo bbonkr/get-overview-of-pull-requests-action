@@ -166,7 +166,7 @@ jobs:
       - name: Update pull
         if: ${{ steps.get_overview.outputs.pull_number != '' }}
         run: |
-          gh pr edit ${{ env.MAIN_BRANCH_NAME }} \
+          gh pr edit ${{ steps.get_overview.outputs.pull_number }} \
             --body '${{ steps.get_overview.outputs.body }}' \
             --title 'Release ${{ env.MAIN_BRANCH_NAME }} 🚀' \
             --add-label '${{ steps.get_overview.outputs.labels }}'
