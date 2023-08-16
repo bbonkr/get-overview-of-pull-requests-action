@@ -1,5 +1,7 @@
 # Get overview of pull requests
 
+[![](https://img.shields.io/github/v/release/bbonkr/get-overview-of-pull-requests-action?display_name=tag&style=flat-square&include_prereleases)](https://github.com/bbonkr/get-overview-of-pull-requests-action/releases)
+
 GitHub action which is getting overview of pull requests.
 
 ## Usages
