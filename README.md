@@ -22,36 +22,21 @@ env:
   PROJECT_NAME: ''
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # ... build workflow
+
   create-tag:
-    needs: [build]
+    needs: [build] # build job is completed as success
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set Node.js 18.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-
-      - name: Install dependencies
-        run: |
-          npm install
-
-      - name: Run test
-        run: |
-          npm run test --if-present
-        env:
-          NODE_ENV: test
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          OWNER: ${{ secrets.OWNER }}
-          REPO: ${{ secrets.REPO }}
-
-      - name: Run all npm script
-        run: |
-          npm run all
-        # env:
-        #   NODE_ENV: production
+      # ... more steps
 
       - name: 'get next version name'
         uses: bbonkr/next-version-proposal-action@v1
@@ -159,3 +144,7 @@ jobs:
 | assignees   | A comma-separated list of assignee logins       |
 | reviewers   | A comma-separated list of reviewer logins       |
 | pull_number | Pull request number of base branch if it exists |
+
+### Limitations
+
+We cannot add project which defined on ORG (or profile) level when create pull or update pull.
