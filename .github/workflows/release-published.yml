@@ -49,6 +49,7 @@ jobs:
           echo "version=${{ steps.git_tag_check.outputs.patch }}"
 
       - name: Git tag not found
+        if: ${{ steps.git_tag_check.outputs.tag == '' }}
         run: |
           echo "There is no '${{ github.ref_name }}' git tag"
           exit 1

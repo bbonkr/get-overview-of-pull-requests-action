@@ -7,7 +7,6 @@ on: # rebuild any PRs and main branch changes
 permissions:
   contents: write
   pull-requests: write
-  repository-projects: read
 
 env:
   MAIN_BRANCH_NAME: main
