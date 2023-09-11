@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Node.js 18.x
         uses: actions/setup-node@v3
@@ -56,7 +56,7 @@ jobs:
       next_version: ${{ steps.next_version_proposal.outputs.next_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 'get next version name'
         uses: bbonkr/next-version-proposal-action@v1
@@ -89,7 +89,7 @@ jobs:
     if: ${{ needs.create-tag.outputs.next_version != '' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Logging
         run: |
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Node.js 18.x
         uses: actions/setup-node@v3
