@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # ... build workflow
 
   create-tag:
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # ... more steps
 
@@ -61,7 +61,7 @@ jobs:
 
       - name: create GitHub Release
         id: release_drafter
-        uses: release-drafter/release-drafter@v5
+        uses: release-drafter/release-drafter@v6
         if: ${{ steps.next_version_proposal.outputs.next_version != '' }}
         with:
           config-name: release-drafter.yml

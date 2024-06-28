@@ -10,11 +10,14 @@ on:
     branches:
       - main
     paths-ignore:
-      - '**.md'
+      - "**.md"
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
   workflow_dispatch:
+
+env:
+  NODE_VERSION: 20.x
 
 jobs:
   check-dist:
@@ -22,16 +25,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: git config
         run: |
           git config --global core.autocrlf true
 
-      - name: Set Node.js 18.x
-        uses: actions/setup-node@v3
+      - name: Set Node.js ${{env.NODE_VERSION}}
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: ${{env.NODE_VERSION}}
 
       - name: Install dependencies
         run: npm install
@@ -62,7 +65,7 @@ jobs:
         id: diff
 
       # If index.js was different than expected, upload the expected version as an artifact
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ failure() && steps.diff.conclusion == 'failure' }}
         with:
           name: dist
