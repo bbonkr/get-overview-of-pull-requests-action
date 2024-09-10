@@ -1,5 +1,5 @@
 import core from '@actions/core'
-// import {RequestError} from '@octokit/types'
+// import { RequestError } from '@octokit/types'
 import {RequestError} from './request-error'
 
 export const handleError = (err: unknown): void => {
