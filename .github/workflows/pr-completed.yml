@@ -67,7 +67,6 @@ jobs:
           pr: ${{ github.event.pull_request.number }}
           major_labels: "major,next"
           minor_labels: "enhancement,feature"
-          patch_labels: "bug,documentation,chore,dependencies"
           next_version_prefix: "v"
 
       - name: "Create tag"
