@@ -126,16 +126,16 @@ jobs:
 
 ### Inputs
 
-| Name              | Required | Description                                                                    |
-| :---------------- | :------: | :----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| github_token      |    ✅    | GitHub Personal Access Token. It requires REPO scope.                          |
-| base              |    ✅    | Base branch name of pull request                                               |
-| head              |    ✅    | Head branch name of pull request                                               |
-| default_branch    |          | Branch name which collects informations; default: default branch of repository |
-| owner             |          | Name of repository owner, For test. You does not need this input.              |
-| repo              |          | Repository name; For test. You does not need this input.                       |
-| addResolveKeyword |          |                                                                                | Adds `Resolve` keyword before pull request number (Please set `true` if you want to append `Resolve` keyword before pull request number) |
-| logging           |          | Shows logging message (Please set `true` if you want to show logging messages) |
+| Name              | Required | Description                                                                                                                              |
+| :---------------- | :------: | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| github_token      |    ✅    | GitHub Personal Access Token. It requires REPO scope.                                                                                    |
+| base              |    ✅    | Base branch name of pull request                                                                                                         |
+| head              |    ✅    | Head branch name of pull request                                                                                                         |
+| default_branch    |          | Branch name which collects informations; default: default branch of repository                                                           |
+| owner             |          | Name of repository owner, For test. You does not need this input.                                                                        |
+| repo              |          | Repository name; For test. You does not need this input.                                                                                 |
+| addResolveKeyword |          | Adds `Resolve` keyword before pull request number (Please set `true` if you want to append `Resolve` keyword before pull request number) |
+| logging           |          | Shows logging message (Please set `true` if you want to show logging messages)                                                           |
 
 ### outputs
 
