@@ -25,6 +25,14 @@ inputs:
     required: false
     description: "Repository name; For test. You does not need this input."
     default: ""
+  addResolveKeyword:
+    required: false
+    description: "Adds `Resolve` keyword before pull request number (Please set `true` if you want to append `Resolve` keyword before pull request number)"
+    default: ""
+  logging:
+    required: false
+    description: "Shows logging message (Please set `true` if you want to show logging messages)"
+    default: ""
 
 outputs:
   title:

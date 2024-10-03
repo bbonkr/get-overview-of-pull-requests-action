@@ -4,5 +4,7 @@ export const inputs = {
   repo: 'repo',
   base: 'base',
   head: 'head',
-  defaultBranch: 'default_branch'
+  defaultBranch: 'default_branch',
+  addResolveKeyword: 'addResolveKeyword',
+  logging: 'logging'
 }
