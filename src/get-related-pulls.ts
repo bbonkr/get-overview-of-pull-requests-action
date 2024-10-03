@@ -45,6 +45,8 @@ type GetRelatedPullsOptions = {
   limit?: number
   message?: string
   hideNotificationMessage?: boolean
+  appendResolveKeyword?: boolean
+  logging?: boolean
 }
 
 export type GetRelatedPullsResult = {
@@ -54,6 +56,16 @@ export type GetRelatedPullsResult = {
   milestone?: string
   assignees?: string
   reviewers?: string
+}
+
+const generatePullRequestNumberListItem = (
+  pullRequestNumber: number,
+  appendResolveKeyword?: boolean
+): string => {
+  const resolveKeyword = 'Resolve'
+  return `- ${
+    appendResolveKeyword ? `${resolveKeyword} ` : ''
+  }#${pullRequestNumber}`
 }
 
 export const getRelatedPulls = async (
@@ -67,7 +79,9 @@ export const getRelatedPulls = async (
     mergedAfter,
     limit,
     message,
-    hideNotificationMessage
+    hideNotificationMessage,
+    appendResolveKeyword,
+    logging
   } = options
 
   const merged = mergedAfter ?? new Date('1990-01-01T00:00:00Z')
@@ -85,7 +99,9 @@ export const getRelatedPulls = async (
 
     do {
       try {
-        core.debug(`Try to get list of pulls. repo=${repo}`)
+        if (logging) {
+          core.debug(`Try to get list of pulls. repo=${repo}`)
+        }
 
         const baseQuery = base ? `base:${base}` : ''
 
@@ -110,7 +126,9 @@ export const getRelatedPulls = async (
 
         resultCount = data.items?.length ?? 0
 
-        core.debug(`Found ${resultCount} pulls.`)
+        if (logging) {
+          core.debug(`Found ${resultCount} pulls.`)
+        }
 
         const upToPRs = data.items.slice().map(x => {
           const pull: Pull = {
@@ -123,7 +141,9 @@ export const getRelatedPulls = async (
           return pull
         })
 
-        core.debug(`Count of filtered pulls is ${upToPRs.length}`)
+        if (logging) {
+          core.debug(`Count of filtered pulls is ${upToPRs.length}`)
+        }
 
         if (upToPRs && upToPRs.length > 0) {
           prs = [...prs, ...upToPRs]
@@ -139,12 +159,14 @@ export const getRelatedPulls = async (
 
         page = page + 1 // next page
       } catch (err) {
-        core.debug('Fail to get list of pulls.')
+        core.warning('Fail to get list of pulls.')
         break
       }
     } while (resultCount > 0)
 
-    core.debug(`Count of collected pulls is ${prs.length}.`)
+    if (logging) {
+      core.debug(`Count of collected pulls is ${prs.length}.`)
+    }
 
     const labels = prs
       .flatMap(pr => pr.labels.map(label => label.name))
@@ -174,7 +196,9 @@ ${message}
 
 ### Related pulls
 
-${prs.map(pr => `- #${pr.number}`).join('\n')}
+${prs
+  .map(pr => generatePullRequestNumberListItem(pr.number, appendResolveKeyword))
+  .join('\n')}
 
 ${
   hideNotificationMessage

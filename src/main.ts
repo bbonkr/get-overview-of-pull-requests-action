@@ -7,18 +7,24 @@ import getRelatedPulls from './get-related-pulls'
 import {setOutputs} from './set-outputs'
 
 async function run(): Promise<void> {
+  const trueValue = 'true'
+
   const token = core.getInput(inputs.githubToken)
   const base = core.getInput(inputs.base)
   const head = core.getInput(inputs.head)
   let owner = core.getInput(inputs.owner)
   let repo = core.getInput(inputs.repo)
   let defaultBranch = core.getInput(inputs.defaultBranch)
+  const addResolveKeyword = core.getInput(inputs.addResolveKeyword)
+  const logging = core.getInput(inputs.logging)
+
+  const addResolveKeywordValue = addResolveKeyword?.toLowerCase() === trueValue
+  const loggingValue = logging?.toLowerCase() === trueValue
 
   try {
     if (!token) {
       throw new Error('Token is required')
     }
-
     if (!base) {
       throw new Error('Base is required')
     }
@@ -41,9 +47,11 @@ async function run(): Promise<void> {
       }
     }
 
-    core.info(
-      `Try to generate overview of pull request which is ${base} ⬅️ ${head}`
-    )
+    if (loggingValue) {
+      core.info(
+        `Try to generate overview of pull request which is ${base} ⬅️ ${head}`
+      )
+    }
 
     const latestPullRequest = await getLatestPull({
       token,
@@ -51,7 +59,8 @@ async function run(): Promise<void> {
       repo,
       base,
       head,
-      state: 'closed'
+      state: 'closed',
+      logging: loggingValue
     })
 
     const latestPullRequestMergedAt = latestPullRequest?.mergedAt
@@ -63,7 +72,9 @@ async function run(): Promise<void> {
       owner,
       repo,
       base: defaultBranch,
-      mergedAfter: latestPullRequestMergedAt
+      mergedAfter: latestPullRequestMergedAt,
+      appendResolveKeyword: addResolveKeywordValue,
+      logging: loggingValue
     })
 
     const openedPull = await getLatestPull({
@@ -72,7 +83,8 @@ async function run(): Promise<void> {
       repo,
       base,
       head,
-      state: 'open'
+      state: 'open',
+      logging: loggingValue
     })
 
     setOutputs({...getRelatedPrsResult, ...openedPull})

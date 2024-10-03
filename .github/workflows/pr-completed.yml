@@ -138,6 +138,8 @@ jobs:
           base: main
           head: ${{ github.event.pull_request.base.ref }}
           default_branch: dev
+          addResolveKeyword: true
+          logging: true
 
       - name: logging
         run: |
