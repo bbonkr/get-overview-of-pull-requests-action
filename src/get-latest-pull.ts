@@ -20,12 +20,13 @@ type GetLatestPrsOptions = {
   base?: string
   head?: string
   state?: PrStatus
+  logging?: boolean
 }
 
 export const getLatestPull = async (
   options: GetLatestPrsOptions
 ): Promise<GetLatestPrsResult | null> => {
-  const {token, owner, repo, base, head, state} = options
+  const {token, owner, repo, base, head, state, logging} = options
 
   try {
     const octokit = github.getOctokit(token)
@@ -68,7 +69,9 @@ export const getLatestPull = async (
       }
     }
 
-    core.warning(`Lasted Pr (base=${base}, head=${head}) not found`)
+    if (logging) {
+      core.warning(`Lasted Pr (base=${base}, head=${head}) not found`)
+    }
 
     return null
   } catch (err: unknown) {
