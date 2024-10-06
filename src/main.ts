@@ -15,10 +15,8 @@ async function run(): Promise<void> {
   let owner = core.getInput(inputs.owner)
   let repo = core.getInput(inputs.repo)
   let defaultBranch = core.getInput(inputs.defaultBranch)
-  const addResolveKeyword = core.getInput(inputs.addResolveKeyword)
   const logging = core.getInput(inputs.logging)
 
-  const addResolveKeywordValue = addResolveKeyword?.toLowerCase() === trueValue
   const loggingValue = logging?.toLowerCase() === trueValue
 
   try {
@@ -73,7 +71,6 @@ async function run(): Promise<void> {
       repo,
       base: defaultBranch,
       mergedAfter: latestPullRequestMergedAt,
-      appendResolveKeyword: addResolveKeywordValue,
       logging: loggingValue
     })
 
