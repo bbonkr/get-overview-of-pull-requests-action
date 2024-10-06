@@ -133,11 +133,9 @@ jobs:
         uses: ./
         id: get_overview
         with:
-          github_token: ${{ github.token }}
           base: main
           head: ${{ github.event.pull_request.base.ref }}
           default_branch: dev
-          addResolveKeyword: true
           logging: true
 
       - name: logging

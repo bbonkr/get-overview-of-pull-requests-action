@@ -5,6 +5,5 @@ export const inputs = {
   base: 'base',
   head: 'head',
   defaultBranch: 'default_branch',
-  addResolveKeyword: 'addResolveKeyword',
   logging: 'logging'
 }

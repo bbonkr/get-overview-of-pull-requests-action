@@ -45,7 +45,6 @@ type GetRelatedPullsOptions = {
   limit?: number
   message?: string
   hideNotificationMessage?: boolean
-  appendResolveKeyword?: boolean
   logging?: boolean
 }
 
@@ -80,7 +79,6 @@ export const getRelatedPulls = async (
     limit,
     message,
     hideNotificationMessage,
-    appendResolveKeyword,
     logging
   } = options
 
@@ -196,9 +194,7 @@ ${message}
 
 ### Related pulls
 
-${prs
-  .map(pr => generatePullRequestNumberListItem(pr.number, appendResolveKeyword))
-  .join('\n')}
+${prs.map(pr => generatePullRequestNumberListItem(pr.number, false)).join('\n')}
 
 ${
   hideNotificationMessage
