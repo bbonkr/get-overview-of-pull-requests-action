@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: 20.x
+  NODE_VERSION: 24.x
 
 jobs:
   check-dist:
@@ -25,14 +25,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: git config
         run: |
           git config --global core.autocrlf true
 
       - name: Set Node.js ${{env.NODE_VERSION}}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{env.NODE_VERSION}}
 
@@ -65,7 +65,7 @@ jobs:
         id: diff
 
       # If index.js was different than expected, upload the expected version as an artifact
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ failure() && steps.diff.conclusion == 'failure' }}
         with:
           name: dist

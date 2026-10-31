@@ -47,5 +47,5 @@ outputs:
   pull_number:
     description: "Pull request number of base branch if it exists"
 runs:
-  using: "node20"
+  using: "node24"
   main: "dist/index.js"
