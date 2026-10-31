@@ -1,4 +1,4 @@
-import core from '@actions/core'
+import * as core from '@actions/core'
 // import { RequestError } from '@octokit/types'
 import {RequestError} from './request-error'
 
