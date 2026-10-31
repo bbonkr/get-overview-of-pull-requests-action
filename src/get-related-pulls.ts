@@ -156,7 +156,7 @@ export const getRelatedPulls = async (
         }
 
         page = page + 1 // next page
-      } catch (err) {
+      } catch {
         core.warning('Fail to get list of pulls.')
         break
       }
